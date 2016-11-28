@@ -1,0 +1,33 @@
+CREATE OR REPLACE FUNCTION CONTA_LOCACOES(CPF VARCHAR2(15))
+RETURN VARCHAR2(25);
+
+AS
+    N_LOCACOES NUMBER(5);
+    CLI_EXISTE NUMBER(2);
+
+BEGIN
+
+    SELECT COUNT(*) INTO N_LOCACOES
+    FROM TBTLOCACAO
+    WHERE CPF_CLI = CPF;
+
+    SELECT COUNT(*) INTO CLI_EXISTE
+    FROM TBTCLIENTE
+    WHERE TBTCLIENTE.CPF = CPF;
+
+    IF CLI_EXISTE = 0
+        RETURN 'Cliente inexistente';
+    ELSE
+        IF N_LOCACOES > 5 THEN
+            RETURN 'Cliente preferencial';
+        ELSIF N_LOCACOES >= 1 THEN
+            RETURN 'Cliente normal';
+        ELSE
+            RETURN 'Cliente inativo';
+        END IF
+    END IF
+
+END
+
+-- SELECT *
+-- FROM DUAL;
