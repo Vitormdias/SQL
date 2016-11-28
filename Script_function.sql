@@ -1,5 +1,29 @@
-CREATE OR REPLACE FUNCTION CONTA_LOCACOES(CPF VARCHAR2(15))
-RETURN VARCHAR2(25);
+--5.6
+CREATE OR REPLACE FUNCTION F_VERIFICAPTSFIDELIDADES(PCPF VARCHAR2)
+	RETURN VARCHAR2
+  
+	AS VPONTOS NUMBER(5);
+	BEGIN
+		SELECT PONTOS_FIDELIDADE INTO VPONTOS
+		FROM TBTCLIENTE
+		WHERE CPF = PCPF;
+		
+		IF VPONTOS > 200 THEN
+			RETURN 'Cliente tem direito a 10% de desconto no valor da diária';
+ 
+		ELSIF VPONTOS BETWEEN 100 AND 200 THEN
+			RETURN 'Cliente tem direito a 5% de desconto no valor da diária';
+		ELSE
+			RETURN'Cliente não tem direito a desconto no valor da diária';
+    END IF;
+END;
+
+SELECT CPF, F_VERIFICAPTSFIDELIDADES(CPF)
+FROM TBTCLIENTE;
+
+--5.4
+CREATE OR REPLACE FUNCTION CONTA_LOCACOES(CPF VARCHAR2)
+RETURN VARCHAR2
 
 AS
     N_LOCACOES NUMBER(5);
@@ -15,7 +39,7 @@ BEGIN
     FROM TBTCLIENTE
     WHERE TBTCLIENTE.CPF = CPF;
 
-    IF CLI_EXISTE = 0
+    IF CLI_EXISTE = 0 THEN
         RETURN 'Cliente inexistente';
     ELSE
         IF N_LOCACOES > 5 THEN
@@ -24,10 +48,11 @@ BEGIN
             RETURN 'Cliente normal';
         ELSE
             RETURN 'Cliente inativo';
-        END IF
-    END IF
+        END IF;
+    END IF;
 
-END
+END;
+
 
 -- SELECT *
 -- FROM DUAL;
